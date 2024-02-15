@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Softorium API
+  version: 1.0.0
+  description: api for magic ball
+paths:
+  /api/v1/ask_question/:
+    post:
+      operationId: ask_question_create
+      tags:
+      - ask_question
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/get_all_history_questions/:
+    get:
+      operationId: get_all_history_questions_retrieve
+      tags:
+      - get_all_history_questions
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/get_history_questions/:
+    get:
+      operationId: get_history_questions_retrieve
+      tags:
+      - get_history_questions
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

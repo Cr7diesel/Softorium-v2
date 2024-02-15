@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  django_app:
+    container_name: django_app
+    build: .
+    command: /bin/sh -c "python3 manage.py migrate &&
+                      python3 manage.py spectacular --color --file schema.yml &&
+                      python3 manage.py runserver 0.0.0.0:8000
+                      "
+    volumes:
+      - .:/django_app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=pg_db
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=pass
+    restart: unless-stopped
+    depends_on:
+      - pg_db
+
+  pg_db:
+    container_name: pg_db
+    image: postgres:14.6-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+    restart: unless-stopped
