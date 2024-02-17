@@ -6,30 +6,40 @@ info:
 paths:
   /api/v1/ask_question/:
     post:
-      operationId: ask_question_create
+      operationId: Ask the question
+      description: Ask the question
       tags:
       - ask_question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ask the question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ask the question'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ask the question'
+        required: true
       security:
       - basicAuth: []
       - tokenAuth: []
       responses:
-        '200':
-          description: No response body
-  /api/v1/get_all_history_questions/:
-    get:
-      operationId: get_all_history_questions_retrieve
-      tags:
-      - get_all_history_questions
-      security:
-      - basicAuth: []
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
+        '201':
+          description: 'Вопрос: текст вопроса, Ответ: текст ответа'
+        '400':
+          description: No question
+        '401':
+          description: Incorrect authentication credentials.
+        '403':
+          description: Credentials weren't provided
+        '404':
+          description: Question does not exist
   /api/v1/get_history_questions/:
     get:
-      operationId: get_history_questions_retrieve
+      operationId: get_history_questions
+      description: Get history questions
       tags:
       - get_history_questions
       security:
@@ -37,8 +47,54 @@ paths:
       - tokenAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: Success
+        '204':
+          description: You haven't any questions yet
+        '401':
+          description: Incorrect authentication credentials.
+        '403':
+          description: Credentials weren't provided
+        '404':
+          description: Question does not exist
 components:
+  schemas:
+    Ask the question:
+      type: object
+      properties:
+        question:
+          type: string
+      required:
+      - question
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        total:
+          type: integer
+        text:
+          type: string
+          maxLength: 255
+        answer:
+          type: string
+          maxLength: 255
+        asked_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+      required:
+      - asked_at
+      - id
+      - text
+      - total
+      - user
   securitySchemes:
     basicAuth:
       type: http

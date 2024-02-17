@@ -1,10 +1,11 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from .models import Question
 
 
-class QuestionSerializer(ModelSerializer):
+class QuestionSerializer(serializers.ModelSerializer):
+    total = serializers.IntegerField(default=None)
 
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = "__all__"
