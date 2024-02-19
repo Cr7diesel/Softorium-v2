@@ -9,7 +9,12 @@
 </head>
 <body>
 <div class="container bg-light">
-    <h1>История Вопросов</h1>
+    <br>
+    <div class="text-end">
+           <a href="{% url 'question' %}"><button type="button" class="btn btn-dark text-white me-2">Назад</button></a>
+    </div>
+    <h1>История Вопросов:</h1>
+    <br>
         {% if questions %}
             <div class="table-responsive">
                 <table class="table" style="font-size:18px;font-family: 'Oswald', sans-serif;">

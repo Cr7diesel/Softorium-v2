@@ -21,7 +21,7 @@ class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = "register.html"
     extra_context = {"title": "Регистрация"}
-    success_url = reverse_lazy("question")
+    success_url = reverse_lazy("login")
 
 
 class LoginUser(LoginView):
@@ -83,7 +83,7 @@ def get_history_questions(request):
                 .annotate(total=Count("text"))
             )
             .values("user", "text", "answer", "total")
-            .order_by("-asked_at")
+
         )
 
         if not questions:
