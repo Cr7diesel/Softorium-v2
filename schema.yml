@@ -6,7 +6,7 @@ info:
 paths:
   /api/v1/ask_question/:
     post:
-      operationId: Ask the question
+      operationId: ask_the_question
       description: Ask the question
       tags:
       - ask_question
@@ -27,7 +27,7 @@ paths:
       - tokenAuth: []
       responses:
         '201':
-          description: 'Вопрос: текст вопроса, Ответ: текст ответа'
+          description: Success
         '400':
           description: No question
         '401':
@@ -50,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Question'
+                $ref: '#/components/schemas/GetQuestion'
           description: Success
         '204':
           description: You haven't any questions yet
@@ -69,7 +69,7 @@ components:
           type: string
       required:
       - question
-    Question:
+    GetQuestion:
       type: object
       properties:
         id:
@@ -93,7 +93,6 @@ components:
       - asked_at
       - id
       - text
-      - total
       - user
   securitySchemes:
     basicAuth:

@@ -15,7 +15,6 @@ DEBUG = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = ["*"]
 
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "api.apps.ApiConfig",
+    "magic_site.apps.MagicSiteConfig",
     "drf_spectacular",
 ]
 
@@ -97,7 +97,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
@@ -114,3 +113,6 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+LOGOUT_REDIRECT_URL = "login"
+LOGIN_REDIRECT_URL = "question"

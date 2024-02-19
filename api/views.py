@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import exceptions, status, serializers as s
 
-from .serializers import QuestionSerializer
+from .serializers import GetQuestionSerializer, AskQuestionSerializer
 from .models import Question
 
 
@@ -17,7 +17,7 @@ class AskQuestion(APIView):
 
     @extend_schema(
         description="Ask the question",
-        operation_id="Ask the question",
+        operation_id="ask_the_question",
         request=inline_serializer(
             name="Ask the question",
             fields={
@@ -25,16 +25,14 @@ class AskQuestion(APIView):
             },
         ),
         responses={
-            201: OpenApiResponse(
-                description="Вопрос: текст вопроса, Ответ: текст ответа"
-            ),
+            201: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="No question"),
             401: OpenApiResponse(description="Incorrect authentication credentials."),
             403: OpenApiResponse(description="Credentials weren't provided"),
             404: OpenApiResponse(description="Question does not exist"),
         },
     )
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         try:
             CHOICES = (
                 "Да",
@@ -49,7 +47,7 @@ class AskQuestion(APIView):
 
             answer = random.choice(CHOICES)
             question_request = request.data.get("question")
-            user = request.user
+            user = request.user.pk
 
             if not question_request:
                 return Response(
@@ -59,7 +57,7 @@ class AskQuestion(APIView):
 
             data = {"user": user, "text": question_request, "answer": answer}
 
-            serializer = QuestionSerializer(data=data)
+            serializer = AskQuestionSerializer(data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
@@ -87,7 +85,7 @@ class GetHistoryQuestions(APIView):
         operation_id="get_history_questions",
         responses={
             (200, "application/json"): OpenApiResponse(
-                response=QuestionSerializer, description="Success"
+                response=GetQuestionSerializer, description="Success"
             ),
             204: OpenApiResponse(description="You haven't any questions yet"),
             401: OpenApiResponse(description="Incorrect authentication credentials."),
@@ -102,18 +100,15 @@ class GetHistoryQuestions(APIView):
                 .filter(user__pk=request.user.pk)
                 .values("text")
                 .annotate(total=Count("text"))
-            ).values("user", "text", "total")
+            ).values("user", "text", "answer", "total")
 
             if not questions:
                 return Response(
-                    {"Sorry": "You're don't ask the question"},
+                    {"Sorry": "You're not asked the question"},
                     status=status.HTTP_204_NO_CONTENT,
                 )
 
-            serializer = QuestionSerializer(data=list(questions), many=True)
-            serializer.is_valid(raise_exception=True)
-
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"questions": questions}, status=status.HTTP_200_OK)
         except exceptions.PermissionDenied:
             return Response(
                 {"Error": "Permissions denied"}, status=status.HTTP_403_FORBIDDEN
