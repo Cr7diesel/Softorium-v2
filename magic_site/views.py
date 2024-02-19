@@ -76,15 +76,11 @@ def ask_question(request):
 def get_history_questions(request):
     try:
         questions = (
-            (
-                Question.objects.select_related("user")
-                .filter(user__pk=request.user.pk)
-                .values("text")
-                .annotate(total=Count("text"))
-            )
-            .values("user", "text", "answer", "total")
-
-        )
+            Question.objects.select_related("user")
+            .filter(user__pk=request.user.pk)
+            .values("text")
+            .annotate(total=Count("text"))
+        ).values("user", "text", "answer", "total")
 
         if not questions:
             raise HttpResponseNotFound
